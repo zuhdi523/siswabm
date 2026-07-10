@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pencarian Data Siswa SD</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
-  
+
   <style>
     /* Reset Global & Tema Ceria */
     * {
@@ -13,35 +13,37 @@
       margin: 0;
       padding: 0;
     }
+    html { -webkit-text-size-adjust: 100%; }
     body {
       font-family: 'Quicksand', sans-serif;
       background-color: #f0f9ff;
       color: #333;
-      padding: 12px;
+      padding: clamp(10px, 3vw, 28px);
       display: flex;
       justify-content: center;
       min-height: 100vh;
+      line-height: 1.4;
     }
     .container {
       background-color: #ffffff;
       border-radius: 24px;
       box-shadow: 0 10px 30px rgba(149, 157, 165, 0.1);
-      padding: 16px;
+      padding: clamp(14px, 4vw, 32px);
       width: 100%;
-      max-width: 1000px; /* Diperlebar sedikit agar ruang monitor lega */
+      max-width: 1100px; /* dibatasi biar tidak terlalu renggang di monitor lebar */
       border: 4px solid #bae6fd;
       align-self: flex-start;
-      margin-top: 10px;
+      margin: clamp(6px, 2vw, 20px) auto 0;
     }
     h1 {
       font-family: 'Fredoka One', cursive;
       color: #0284c7;
       text-align: center;
       margin-bottom: 20px;
-      font-size: 1.7rem;
+      font-size: clamp(1.35rem, 4vw, 2.3rem);
       text-shadow: 2px 2px #e0f2fe;
     }
-    
+
     /* Box Form Pencarian (Fleksibel Flexbox) */
     .search-box {
       display: flex;
@@ -49,12 +51,13 @@
       gap: 14px;
       margin-bottom: 25px;
       background-color: #f8fafc;
-      padding: 16px;
+      padding: clamp(12px, 3vw, 20px);
       border-radius: 16px;
       border: 2px dashed #cbd5e1;
     }
     .form-group {
       width: 100%;
+      min-width: 0; /* cegah overflow saat flex row di tablet/desktop */
     }
     label {
       display: block;
@@ -65,14 +68,17 @@
     }
     input[type="text"], select {
       width: 100%;
-      padding: 12px 16px;
+      padding: 12px 14px;
       border: 2px solid #cbd5e1;
       border-radius: 12px;
       font-family: 'Quicksand', sans-serif;
-      font-size: 1rem;
+      font-size: 16px; /* >=16px agar iOS Safari tidak auto-zoom saat fokus */
       box-sizing: border-box;
       outline: none;
       transition: border-color 0.2s;
+      background-color: #fff;
+      -webkit-appearance: none;
+      appearance: none;
     }
     input[type="text"]:focus, select:focus {
       border-color: #38bdf8;
@@ -85,21 +91,23 @@
       border-radius: 12px;
       padding: 14px;
       font-family: 'Fredoka One', cursive;
-      font-size: 1.1rem;
+      font-size: clamp(1rem, 2.5vw, 1.15rem);
       cursor: pointer;
       width: 100%;
       box-shadow: 0 4px 0 #0284c7;
       transition: all 0.1s;
+      min-height: 48px; /* target sentuh yang nyaman di HP */
     }
     button:active {
       transform: translateY(4px);
       box-shadow: none;
     }
+    button:hover { filter: brightness(1.03); }
 
-    /* --- SISTEM HASIL (Default 1 Kolom ke bawah untuk HP) --- */
+    /* --- SISTEM HASIL --- */
     .results-container {
       display: grid;
-      grid-template-columns: 1fr; 
+      grid-template-columns: 1fr;
       gap: 16px;
       margin-top: 15px;
     }
@@ -113,6 +121,8 @@
       flex-direction: column;
       justify-content: space-between;
       transition: all 0.2s;
+      min-width: 0;
+      overflow-wrap: break-word;
     }
     .siswa-card:hover {
       transform: translateY(-2px);
@@ -123,13 +133,15 @@
       font-family: 'Fredoka One', cursive;
       color: #0ea5e9;
       margin-bottom: 12px;
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       border-bottom: 2px solid #e0f2fe;
       padding-bottom: 6px;
+      overflow-wrap: break-word;
     }
     .info-row {
       display: flex;
       justify-content: space-between;
+      gap: 10px;
       padding: 8px 0;
       border-bottom: 1px dashed #f1f5f9;
       font-size: 0.95rem;
@@ -140,12 +152,15 @@
     .info-label {
       font-weight: 700;
       color: #64748b;
+      flex-shrink: 0;
     }
     .info-value {
       text-align: right;
       font-weight: 500;
       color: #1e293b;
       padding-left: 10px;
+      overflow-wrap: break-word;
+      min-width: 0;
     }
     .wa-block {
       margin-top: 12px;
@@ -161,13 +176,14 @@
       background-color: #22c55e;
       color: white;
       text-decoration: none;
-      padding: 8px 20px;
+      padding: 10px 20px;
       border-radius: 20px;
       font-size: 0.9rem;
       font-weight: 700;
       box-shadow: 0 3px 0 #15803d;
-      width: 100%; /* Lebar penuh di dalam kartu agar rapi */
+      width: 100%;
       text-align: center;
+      min-height: 40px;
     }
     .btn-wa:active {
       transform: translateY(2px);
@@ -177,33 +193,58 @@
       text-align: center;
       font-weight: 700;
       color: #94a3b8;
-      padding: 30px 20px;
-      grid-column: 1 / -1; /* Mengambil ruang penuh baris */
+      padding: 30px 16px;
+      grid-column: 1 / -1;
     }
     .loading { color: #64748b; display: none; }
 
     /* ==========================================================
-       MEDIA QUERIES: LAYAR LEBAR (TABLET, LAPTOP & MONITOR)
+       BREAKPOINTS BERTAHAP: HP kecil -> HP besar -> Tablet -> Laptop -> Monitor
        ========================================================== */
-    @media screen and (min-width: 650px) {
-      body { padding: 24px; }
-      .container { padding: 28px; }
-      h1 { font-size: 2.2rem; }
-      
-      /* Form di monitor berjejer ke samping */
+
+    /* HP kecil (contoh: 320-359px) sudah otomatis aman berkat clamp() di atas */
+
+    /* Tablet ke atas (portrait tablet, ~600px+): form mulai berjejer,
+       tapi grid hasil TETAP 1 kolom dulu supaya card tidak terlalu sempit */
+    @media screen and (min-width: 600px) {
       .search-box {
         flex-direction: row;
         align-items: flex-end;
+        flex-wrap: wrap;
       }
-      .form-group-kelas { flex: 1; }
-      .form-group-nama { flex: 2; }
-      button { width: auto; padding: 12px 35px; }
-      
-      /* Sihir Monitor: Hasil pencarian otomatis tersusun jadi 2 atau 3 KOLOM KOTAK-KOTAK */
+      .form-group-kelas { flex: 1 1 140px; }
+      .form-group-nama { flex: 2 1 220px; }
+      button { width: auto; padding: 12px 28px; flex-shrink: 0; }
+    }
+
+    /* Tablet landscape / laptop kecil ke atas (~768px+): hasil jadi 2 kolom */
+    @media screen and (min-width: 768px) {
       .results-container {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+      }
+    }
+
+    /* Laptop / desktop (~1024px+): hasil jadi 3 kolom, form lebih lega */
+    @media screen and (min-width: 1024px) {
+      .container { padding: 32px; }
+      button { padding: 14px 40px; }
+      .results-container {
+        grid-template-columns: repeat(3, 1fr);
         gap: 20px;
       }
+    }
+
+    /* Monitor besar (~1400px+): batasi jadi maksimal 3 kolom yang lebih lega,
+       daripada auto-fill yang bikin card jadi kekecilan/berantakan */
+    @media screen and (min-width: 1400px) {
+      .container { max-width: 1200px; }
+    }
+
+    /* HP sangat kecil (<= 359px): kecilkan sedikit padding & badge WA */
+    @media screen and (max-width: 359px) {
+      .container { border-radius: 18px; }
+      .btn-wa { padding: 9px 12px; font-size: 0.85rem; }
     }
   </style>
 </head>
@@ -211,7 +252,7 @@
 
 <div class="container">
   <h1>Cari Data Siswaku 🌟</h1>
-  
+
   <div class="search-box">
     <div class="form-group form-group-kelas">
       <label for="kelas">Pilih Kelas</label>
@@ -224,17 +265,17 @@
         <option value="6">Kelas 6</option>
       </select>
     </div>
-    
+
     <div class="form-group form-group-nama">
       <label for="nama">Nama Siswa</label>
       <input type="text" id="nama" placeholder="Masukkan nama siswa...">
     </div>
-    
+
     <button onclick="jalankanPencarian()">Cari! 🔍</button>
   </div>
-  
+
   <div id="loading" class="loading">Sedang memproses data... Mohon ditunggu ya! ✨</div>
-  
+
   <div id="resultsBox" class="results-container">
     <div id="pesanKosong" class="no-data">Silakan pilih kelas atau masukkan nama siswa untuk memulai.</div>
   </div>
@@ -244,15 +285,15 @@
   function jalankanPencarian() {
     var nama = document.getElementById('nama').value;
     var kelas = document.getElementById('kelas').value;
-    
+
     document.getElementById('loading').style.display = 'block';
     document.getElementById('resultsBox').innerHTML = '';
-    
+
     // !!! GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA !!!
-    var urlGoogleAppScript = "https://script.google.com/macros/s/AKfycbw8FczBZSOuGbH92pV0AKw2wnKTZb9SIEhACj51F4OEfioOPSOSxhUqjpzwNUWSFnyC/exec"; 
-    
+    var urlGoogleAppScript = "https://script.google.com/macros/s/AKfycbw8FczBZSOuGbH92pV0AKw2wnKTZb9SIEhACj51F4OEfioOPSOSxhUqjpzwNUWSFnyC/exec";
+
     var endpoint = `${urlGoogleAppScript}?nama=${encodeURIComponent(nama)}&kelas=${encodeURIComponent(kelas)}`;
-    
+
     fetch(endpoint)
       .then(response => response.json())
       .then(hasil => {
@@ -263,31 +304,31 @@
         document.getElementById('resultsBox').innerHTML = '<div class="no-data">Waduh, terjadi gangguan sistem: ' + error.message + '</div>';
       });
   }
-  
+
   function tampilkanHasil(hasil) {
     document.getElementById('loading').style.display = 'none';
     var resultsBox = document.getElementById('resultsBox');
     resultsBox.innerHTML = '';
-    
+
     if (hasil.error) {
       resultsBox.innerHTML = '<div class="no-data">' + hasil.error + '</div>';
       return;
     }
-    
+
     if (!hasil || hasil.length === 0) {
       resultsBox.innerHTML = '<div class="no-data">Yah, data siswa tidak ditemukan 🕵️‍♂️</div>';
       return;
     }
-    
+
     hasil.forEach(function(siswa) {
       var card = document.createElement('div');
       card.className = 'siswa-card';
-      
+
       var waElement = '<span style="color:#94a3b8">Belum Tersedia</span>';
       if (siswa.linkWa) {
         waElement = '<a class="btn-wa" href="' + siswa.linkWa + '" target="_blank">Gabung Grup 💬</a>';
       }
-      
+
       card.innerHTML = `
         <div>
           <h3>${siswa.nama}</h3>
@@ -297,7 +338,7 @@
         </div>
         <div class="wa-block">${waElement}</div>
       `;
-        
+
       resultsBox.appendChild(card);
     });
   }
