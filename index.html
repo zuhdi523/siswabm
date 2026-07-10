@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pencarian Data Siswa SD</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Reset Global & Tema Ceria */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background-color: #f0f9ff;
+      color: #333;
+      padding: 12px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .container {
+      background-color: #ffffff;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(149, 157, 165, 0.1);
+      padding: 16px;
+      width: 100%;
+      max-width: 850px;
+      border: 4px solid #bae6fd;
+      align-self: flex-start;
+      margin-top: 10px;
+    }
+    h1 {
+      font-family: 'Fredoka One', cursive;
+      color: #0284c7;
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.7rem;
+      text-shadow: 2px 2px #e0f2fe;
+    }
+    
+    /* Box Form Pencarian (Fleksibel Flexbox) */
+    .search-box {
+      display: flex;
+      flex-direction: column; /* Default HP: Susun ke bawah lurus */
+      gap: 14px;
+      margin-bottom: 25px;
+      background-color: #f8fafc;
+      padding: 16px;
+      border-radius: 16px;
+      border: 2px dashed #cbd5e1;
+    }
+    .form-group {
+      width: 100%;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 700;
+      color: #0369a1;
+      font-size: 0.95rem;
+    }
+    input[type="text"], select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1rem;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input[type="text"]:focus, select:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 4px #e0f2fe;
+    }
+    button {
+      background-color: #38bdf8;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.1rem;
+      cursor: pointer;
+      width: 100%; /* Lebar penuh agar mudah di-tap di HP */
+      box-shadow: 0 4px 0 #0284c7;
+      transition: all 0.1s;
+    }
+    button:active {
+      transform: translateY(4px);
+      box-shadow: none;
+    }
+
+    /* Container Hasil Pencarian (Model Kartu Profil Pintar) */
+    .results-container {
+      margin-top: 15px;
+    }
+    .siswa-card {
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.01);
+      transition: transform 0.2s;
+    }
+    .siswa-card:hover {
+      transform: scale(1.01);
+      border-color: #93c5fd;
+    }
+    .siswa-card h3 {
+      font-family: 'Fredoka One', cursive;
+      color: #0ea5e9;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px dashed #f1f5f9;
+      font-size: 0.95rem;
+    }
+    .info-row:last-of-type {
+      border-bottom: none;
+    }
+    .info-label {
+      font-weight: 700;
+      color: #64748b;
+    }
+    .info-value {
+      text-align: right;
+      font-weight: 500;
+      color: #1e293b;
+    }
+    .btn-wa {
+      display: inline-flex;
+      align-items: center;
+      background-color: #22c55e;
+      color: white;
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      box-shadow: 0 2px 0 #15803d;
+    }
+    .loading, .no-data {
+      text-align: center;
+      font-weight: 700;
+      color: #94a3b8;
+      padding: 30px 20px;
+    }
+    .loading { color: #64748b; display: none; }
+
+    /* ==========================================================
+       MEDIA QUERIES: RESPONSIVE LEVEL LAPTOP, MONITOR, & TABLET
+       ========================================================== */
+    @media screen and (min-width: 650px) {
+      body { padding: 24px; }
+      .container { padding: 24px; }
+      h1 { font-size: 2.2rem; }
+      
+      /* Form berubah berjejer rapi ke samping pada monitor layar lebar */
+      .search-box {
+        flex-direction: row;
+        align-items: flex-end;
+      }
+      .form-group-kelas { flex: 1; }
+      .form-group-nama { flex: 2; }
+      button { width: auto; padding: 12px 35px; }
+      
+      /* Kartu otomatis berubah pipih memanjang seperti baris tabel */
+      .siswa-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+      }
+      .siswa-info-block {
+        display: flex;
+        gap: 25px;
+        flex: 1;
+        align-items: center;
+      }
+      .siswa-card h3 { margin-bottom: 0; min-width: 180px; }
+      .info-row {
+        flex-direction: column;
+        border-bottom: none;
+        padding: 0;
+      }
+      .info-label { font-size: 0.8rem; margin-bottom: 2px; }
+      .info-value { text-align: left; font-size: 0.95rem; }
+      .wa-block { border-bottom: none; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Cari Data Siswaku 🌟</h1>
+  
+  <div class="search-box">
+    <div class="form-group form-group-kelas">
+      <label for="kelas">Pilih Kelas Utama</label>
+      <select id="kelas">
+        <option value="1">Kelas 1</option>
+        <option value="2">Kelas 2</option>
+        <option value="3">Kelas 3</option>
+        <option value="4">Kelas 4</option>
+        <option value="5">Kelas 5</option>
+        <option value="6">Kelas 6</option>
+      </select>
+    </div>
+    
+    <div class="form-group form-group-nama">
+      <label for="nama">Nama Siswa</label>
+      <input type="text" id="nama" placeholder="Masukkan nama siswa...">
+    </div>
+    
+    <button onclick="jalankanPencarian()">Cari! 🔍</button>
+  </div>
+  
+  <div id="loading" class="loading">Sedang memproses data... Mohon ditunggu ya! ✨</div>
+  
+  <div id="resultsBox" class="results-container">
+    <div id="pesanKosong" class="no-data">Silakan pilih kelas atau masukkan nama siswa untuk memulai.</div>
+  </div>
+</div>
+
+<script>
+  function jalankanPencarian() {
+    var nama = document.getElementById('nama').value;
+    var kelas = document.getElementById('kelas').value;
+    
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('resultsBox').innerHTML = '';
+    
+    // !!! GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA !!!
+    var urlGoogleAppScript = "https://script.google.com/macros/s/AKfycbw8FczBZSOuGbH92pV0AKw2wnKTZb9SIEhACj51F4OEfioOPSOSxhUqjpzwNUWSFnyC/exec"; 
+    
+    var endpoint = `${urlGoogleAppScript}?nama=${encodeURIComponent(nama)}&kelas=${encodeURIComponent(kelas)}`;
+    
+    fetch(endpoint)
+      .then(response => response.json())
+      .then(hasil => {
+        tampilkanHasil(hasil);
+      })
+      .catch(error => {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('resultsBox').innerHTML = '<div class="no-data">Waduh, terjadi gangguan sistem: ' + error.message + '</div>';
+      });
+  }
+  
+  function tampilkanHasil(hasil) {
+    document.getElementById('loading').style.display = 'none';
+    var resultsBox = document.getElementById('resultsBox');
+    resultsBox.innerHTML = '';
+    
+    if (hasil.error) {
+      resultsBox.innerHTML = '<div class="no-data">' + hasil.error + '</div>';
+      return;
+    }
+    
+    if (!hasil || hasil.length === 0) {
+      resultsBox.innerHTML = '<div class="no-data">Yah, data siswa tidak ditemukan 🕵️‍♂️</div>';
+      return;
+    }
+    
+    hasil.forEach(function(siswa) {
+      var card = document.createElement('div');
+      card.className = 'siswa-card';
+      
+      var waElement = '<span style="color:#94a3b8">-</span>';
+      if (siswa.linkWa) {
+        waElement = '<a class="btn-wa" href="' + siswa.linkWa + '" target="_blank">Gabung Grup 💬</a>';
+      }
+      
+      card.innerHTML = `
+        <div class="siswa-info-block">
+          <h3>${siswa.nama}</h3>
+          <div class="info-row"><span class="info-label">Panggilan</span><span class="info-value">${siswa.panggilan}</span></div>
+          <div class="info-row"><span class="info-label">Kelas</span><span class="info-value">${siswa.kelas}</span></div>
+          <div class="info-row"><span class="info-label">Wali Kelas</span><span class="info-value">${siswa.waliKelas}</span></div>
+        </div>
+        <div class="info-row wa-block"><span class="info-label lay-hp">Tautan Grup</span><span class="info-value">${waElement}</span></div>
+      `;
+        
+      resultsBox.appendChild(card);
+    });
+  }
+</script>
+
+</body>
+</html>
