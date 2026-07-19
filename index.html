@@ -160,6 +160,7 @@
       color: #1e293b;
       padding-left: 10px;
       overflow-wrap: break-word;
+      word-break: break-all; /* email panjang tidak akan mendorong layout */
       min-width: 0;
     }
     .wa-block {
@@ -329,12 +330,18 @@
         waElement = '<a class="btn-wa" href="' + siswa.linkWa + '" target="_blank">Gabung Grup 💬</a>';
       }
 
+      var emailRow = '';
+      if (siswa.email) {
+        emailRow = '<div class="info-row"><span class="info-label">Email</span><span class="info-value"><a href="mailto:' + siswa.email + '">' + siswa.email + '</a></span></div>';
+      }
+
       card.innerHTML = `
         <div>
           <h3>${siswa.nama}</h3>
           <div class="info-row"><span class="info-label">Panggilan</span><span class="info-value">${siswa.panggilan}</span></div>
           <div class="info-row"><span class="info-label">Kelas</span><span class="info-value">${siswa.kelas}</span></div>
           <div class="info-row"><span class="info-label">Wali Kelas</span><span class="info-value">${siswa.waliKelas}</span></div>
+          ${emailRow}
         </div>
         <div class="wa-block">${waElement}</div>
       `;
